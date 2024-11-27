@@ -1,0 +1,56 @@
+version: '3.8'
+services:
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgre
+      POSTGRES_DB: go
+    ports:
+      - "5433:5433"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backup:/backup  # Добавление volume для бэкапа
+      - ./backup/go_dump.sql:/docker-entrypoint-initdb.d/go_dump.sql
+    networks:
+      - goyoga-network
+    deploy:
+      resources:
+        limits:
+          memory: 512M  # Максимальный объем памяти
+        reservations:
+          memory: 256M  # Минимальный объем памяти
+
+  goyoga-app:
+    image: goyoga-app
+    container_name: goyoga-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/go
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgre
+      FIREBASE_CONFIG: /config/yoga-go-cf043-firebase-adminsdk-plzft-61b6d79529.json  # Добавляем переменную окружения
+      POSTGRES_ADDR: jdbc:postgresql://localhost:5433/go  # Добавляем переменную окружения
+    volumes:
+      - ./config:/config  # Монтируем папку config в контейнер
+    depends_on:
+      - postgres-db
+    networks:
+      - goyoga-network
+    deploy:
+      resources:
+        limits:
+          memory: 512M  # Максимальный объем памяти
+        reservations:
+          memory: 256M  # Минимальный объем памяти
+
+volumes:
+  postgres_data:
+
+networks:
+  goyoga-network:

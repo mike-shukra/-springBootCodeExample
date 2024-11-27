@@ -1,0 +1,66 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.14'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'java'
+}
+
+group = 'ru.yogago'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+	mavenCentral()
+}
+
+//configurations {
+//	compileOnly {
+//		extendsFrom annotationProcessor
+//	}
+//}
+
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'org.postgresql:postgresql'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	implementation 'javax.persistence:javax.persistence-api'
+	implementation 'org.hibernate:hibernate-core' // Пример реализации JPA (Hibernate)
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+//	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	//swagger
+//	implementation "io.springfox:springfox-boot-starter:3.0.0"
+	implementation "io.swagger.core.v3:swagger-annotations:2.1.6"
+
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.2'
+	implementation 'org.springdoc:springdoc-openapi-security:1.6.2'
+
+	//firebase
+	implementation ('com.google.firebase:firebase-admin:8.1.0') {
+		exclude group: 'com.google.guava', module: 'guava-jdk5'
+	}
+	implementation ('com.google.firebase:firebase-server-sdk:3.0.3') {
+		exclude group: 'com.google.guava', module: 'guava-jdk5'
+	}
+
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	
+	// tag::security-dependencies[]
+	//  Temporary explicit version to fix Thymeleaf bug
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
+	implementation 'org.springframework.security:spring-security-test'
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
